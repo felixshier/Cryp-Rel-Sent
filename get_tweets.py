@@ -1,18 +1,15 @@
-# Import packages to use
-import twint
+# imports
+import snscrape.modules.twitter as sntwitter
 import pandas as pd
-import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
 
-# Get the last months bitcoin tweets
-# Note the limit doesn't always work as expected (it may be counting tweets to limit but also displaying replies?)
+# Creating list to append tweet data to
+tweets_list2 = []
 
-c = twint.Config()
-c.Hide_output = True
-
-c.Search = '#bitcoin'
-c.Since = '2022-03-01 00:00:00'
-c.Output_csv = True
-c.Output = 'bitcoin-tweets.csv'
-
-twint.run.Search(c)
+# Using TwitterSearchScraper to scrape data and append tweets to list
+for i,tweet in enumerate(sntwitter.TwitterSearchScraper('COVID Vaccine since:2021-01-01 until:2021-05-31').get_items()):
+    if i>5000:
+        break
+    tweets_list2.append([tweet.date, tweet.id, tweet.content, tweet.user.username])
+    
+# Creating a dataframe from the tweets list above
+tweets_df2 = pd.DataFrame(tweets_list2, columns=['Datetime', 'Tweet Id', 'Text', 'Username'])
